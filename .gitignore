@@ -1,0 +1,17 @@
+.idea
+.DS_STORE
+.python-version
+__pycache__
+*.pyc
+.ipynb_checkpoints
+*.ipynb
+
+node_modules
+dist
+.next
+**/logs/*
+web/app/.env*
+web/app/src/pages/_exp
+express/app/src/assets
+mariadb/data/*
+mariadb/init/*

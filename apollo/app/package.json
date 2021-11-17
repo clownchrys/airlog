@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon -L --exec 'ts-node -r tsconfig-paths/register src/index.ts' --watch 'src/**/*' -e ts,json",
+    "prebuild": "rm -rf dist",
+    "build": "tsc --build tsconfig.json",
+    "start": "ts-node -r tsconfig-paths/register dist/index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^3.0.0",
+    "apollo-server-caching": "^3.0.0",
+    "apollo-server-core": "^3.0.0",
+    "graphql": "^15.5.1",
+    "ts-node": "^10.1.0",
+    "tsconfig-paths": "^3.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.4.10",
+    "nodemon": "^2.0.12",
+    "tsc": "^2.0.3",
+    "typescript": "^4.3.5"
+  }
+}

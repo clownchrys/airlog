@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:stable
+    ports:
+      - "81:80" # nginx-default
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - scrap
+      - web
+      - apollo
+      - express
+
+  scrap:
+    image: airlog:scrap
+    build:
+      context: ./scrap
+      dockerfile: Dockerfile
+    volumes:
+      - ./scrap/app:/app
+    depends_on:
+      - mariadb
+    deploy:
+      replicas: 3
+
+  web:
+    container_name: web
+    image: airlog:web
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    command: yarn dev -p 3000
+    ports: 
+      - "3000:3000"
+    volumes:
+      - ./web/app/src:/app/src
+    depends_on:
+        - mariadb
+
+  apollo:
+    image: airlog:apollo
+    build:
+      context: ./apollo
+      dockerfile: Dockerfile
+    command: yarn dev
+    volumes:
+      - ./apollo/app/src:/app/src
+    environment:
+      NODE_ENV: "development"
+      PORT: 4000
+    depends_on:
+      - mariadb
+
+  express:
+    image: airlog:express
+    build:
+      context: ./express
+      dockerfile: Dockerfile
+    command: yarn dev
+    volumes:
+      - ./express/app/src:/app/src
+    environment:
+      NODE_ENV: "development"
+      PORT: 4000
+    depends_on:
+      - mariadb
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.6-focal
+    ports: 
+      - "3306:3306"
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: airlog
+    volumes: 
+      - ./mariadb/init:/docker-entrypoint-initdb.d
